@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en-ca">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>{{ page.title }}</title>
+	<link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+
+<body>
+  <header>
+    <h1>{{ site.title }}</h1>
+    <p>Contact: <a href="mailto:{{ site.email }}">{{ site.site_owner }}</a></p>
+    <p>{{ site.description }}</p>
+    <p>See the <em>notes.md</em> file in the root directory for information on working with jekyll</p>
+  </header>
+  <hr>
+	{% include navigation.html %}
+	<content>
+  {{ content }}
+	</content>
+
+</body>
+
+</html>
