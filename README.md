@@ -165,16 +165,32 @@ user the following structure for assets
 |   └── js
 ```
 
+Link to your assets in the layout file, ie: in `_layouts/default.html` add `<link rel="stylesheet" href="/assets/css/styles.css">`
+
+### Getting a sassmap to show up in code inspector
 
 In testing there was a big issue with how Jekyll compiles SASS. Jekyll does not generate a source map and will over-write it on compile. This means that css is almost impossible to debug. 
 
 so for development, do the following:
 
 1. at `assets/css/styles.scss` disable the *front matter* so it isn't tracked by jekyll
-2. in `config.yml` exclude `_sass`
+2. at `assets/css/styles.scss` comment out `//@import "main";` and replace with `@import "../../_sass/main";`
+3. in `config.yml` exclude `_sass`
+4. in `config.yml` exclude `assets/css/styles.scss`
+5. if it's running, stop `jekyll serve`
+6. start `jekyll serve`
+
+You can now use whatever compiler you like and it will generate a sass map that can be used in the inspector.
+
+This should work fine, but if you want to do things the *jekyll way*, reverse these steps for production.
 
 
+### if using codekit
+There are some things you will need to setup in codekit to work with jekyll
 
+1. go to general settings and add `_site` to the ignore list
+2. in languages, go to markdown and under markdown output, ignore markdown files on change/build (because jekyll does this)
+3. in languages, go to sass and make sure sass compiles to the same folder as the source
 
 ## things to watch out for 
 
