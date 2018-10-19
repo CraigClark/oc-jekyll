@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en-ca">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Learning Jekyll Docs</title>
+	<style>
+  	html {
+    	font-size: 24px;
+  	}
+  	code {
+    	color: maroon;
+  	}
+  	
+  	body {
+    	max-width: 1120px;
+    	margin: 0px auto;
+    	padding: 2rem;
+  	}
+  	</style>
+</head>
+<body>
+  
+  <h1>Notes on Jekyll</h1>
+
+
+  <h2>Resources</h2>
+
+
+  <ul>
+    <li>
+      <a href="https://jekyllrb.com/docs/">Jekyll documentation</a>
+    </li>
+  </ul>
+
+
+  <h2>Getting set up</h2>
+
+
+  <p>These instructions assume Jekyll is installed</p>
+
+
+  <ol>
+    <li>
+      <p>make the directory where you want the site to be. ie <code>mkdir my-jelyll-site</code></p>
+    </li>
+
+
+    <li>
+      <p>in the directory, add an <code>index.html</code> file</p>
+    </li>
+
+
+    <li>
+      <p>run jekyll</p>
+
+
+      <ul>
+        <li><code>jekyll build</code> will output the site to a directory called <code>_site</code></li>
+
+
+        <li>use <code>jekyll serve</code> for development. this will continuously update the site as you work</li>
+      </ul>
+    </li>
+
+
+    <li>
+      <p>view the site at <code>http://localhost:4000</code></p>
+    </li>
+
+
+    <li>
+      <p>it&#39;s a good idea, though not necessary to include a <em>config.yml</em> file in the root directory</p>
+    </li>
+  </ol>
+
+
+  <h2>congfig.yml</h2>
+
+
+  <p>The <em>config.yml</em> file contains site settings. (including global variables). If you mane any changes here, you will have to stop <code>jekyll serve</code> and start it again for them to take effect. Be careful, it&#39;s <code>.yml</code> so proper syntax spacing is critical.</p>
+
+
+  <h2>Liquid</h2>
+
+
+  <p>Jekyll uses the <em>liquid</em> templating language developed by Shopify. Liquid is similar, but not identical to <em>twig</em> which is used for Drupal 8 templating</p>
+
+
+  <h3>Objects</h3>
+
+
+  <p>Objects tell liquid where content goes. and are denoted with curly braces. ie. <code>{{</code> and <code>}}</code>.</p>
+
+
+  <p>For example, <code>{{ page.title }}</code> will output a variable called title.</p>
+
+
+  <h3>Tags</h3>
+
+
+  <p>Tags are used for logic. and use a single curly bracket with a % sign. <code>{% tag %}</code> ie:</p>
+
+  <pre><code>  {% if page.content %}
+    &lt;div&gt;
+    {{ page.content }}
+    &lt;/div&gt;
+  {% endif %}
+
+</code></pre>
+
+  <p>Jekyll has some <a href="https://jekyllrb.com/docs/liquid/tags/">built in tags</a> and you can also use any of the <a href="https://shopify.github.io/liquid/tags/control-flow/">tags available to liquid</a>.</p>
+
+
+  <h3>Filters</h3>
+
+
+  <p>Filters change the output of a liquid object and are seperatd by a <code>|</code>. ie: <code>{{ &quot;hi&quot; | capitalize }}</code> will output &quot;Hi&quot;</p>
+
+
+  <p>Jekyll has it&#39;s own <a href="https://jekyllrb.com/docs/liquid/filters/">list of filters</a> and you can use any filters <a href="https://shopify.github.io/liquid/filters/abs/">available to liquid</a></p>
+
+
+  <h2>Front Matter</h2>
+
+
+  <p>Front matter is <code>YAML</code> that sets variables for the page. Set them at the top of the document between two rows of <code>---</code>. ie</p>
+
+  <pre><code>  ---
+  my_number: 5
+  ---
+</code></pre>
+
+  <p>so you could do something like</p>
+
+  <pre><code>  ---
+  title: Home
+  ---
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;title&gt;{{ page.title }}&lt;/title&gt;
+    &lt;/head&gt;
+  &lt;/html&gt;
+</code></pre>
+
+  <p>you can also use a <em>front matter</em> on markdown pages. Jekyll will generate the html accordingly.</p>
+
+
+  <h2>Creating layouts</h2>
+
+
+  <p>Layouts are templates that wrap around content. create them in a directory called <code>_layouts</code> ie <code>_layouts/default.html</code></p>
+
+
+  <p>A simple layout would look like</p>
+
+  <pre><code>  &lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;{{ page.title }}&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    {{ content }}
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+  <p><code>{{ content }}</code> is a special variable that jekyll uses to show the content of a page.</p>
+
+
+  <p>to include the layout in your html file, use a <em>front matter</em> ie.</p>
+
+  <pre><code>---
+layout: default
+title: Home
+---
+&lt;h1&gt;{{ &quot;Hello World!&quot; | downcase }}&lt;/h1&gt;
+</code></pre>
+
+  <h2>using <em>includes</em></h2>
+
+
+  <p>Includes let you include content from other files. For example, you probably want the navigation the same everywhere.</p>
+
+
+  <ol>
+    <li>
+      <p>create directory <code>_includes</code></p>
+    </li>
+
+
+    <li>
+      <p>make the file you want to include, say <code>_includes/navigation.html</code></p>
+    </li>
+
+
+    <li>
+      <p>add the <em>include</em> to the template, ie:</p>
+
+      <pre><code>&lt;body&gt;
+{% include navigation.html %}
+{{ content }}
+&lt;/body&gt;
+</code></pre>
+
+      <h2>data files</h2>
+    </li>
+  </ol>
+
+
+  <p>Jekyll supports loading data from YAML, JSON, and CSV files located in a <code>_data</code> directory.</p>
+
+
+  <p>For a navigation array:</p>
+
+
+  <ol>
+    <li>
+      <p>create <code>_data/navigation.yml</code></p>
+    </li>
+
+
+    <li>
+      <p>format as follows:</p>
+
+      <pre><code>- name: Home
+link: /
+- name: About
+link: /about.html
+</code></pre>
+
+      <p><a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">more information on formatting yaml</a>
+      </p>
+    </li>
+  </ol>
+
+
+  <p>Jekyll makes this data file available to you at <code>site.data.navigation</code>.</p>
+
+
+  <p>now we can iterate over the data file. In <code>_includes/navigation.html</code> use the following</p>
+
+  <pre><code>&lt;nav&gt;
+  {% for item in site.data.navigation %}
+    &lt;a href=&quot;{{ item.link }}&quot; {% if page.url == item.link %}style=&quot;color: red;&quot;{% endif %}&gt;
+      {{ item.name }}
+    &lt;/a&gt;
+  {% endfor %}
+&lt;/nav&gt;
+</code></pre>
+
+  <h2>Assets</h2>
+
+
+  <p>Jekyll handles assets nicely and will even compile SASS for you.</p>
+
+
+  <p>user the following structure for assets</p>
+
+  <pre><code>.
+├── assets
+|   ├── css
+|   ├── images
+|   └── js
+</code></pre>
+
+  <p>Link to your assets in the layout file, ie: in <code>_layouts/default.html</code> add <code>&lt;link rel=&quot;stylesheet&quot; href=&quot;/assets/css/styles.css&quot;&gt;</code></p>
+
+  <h3>Getting a sassmap to show up in inspector</h3>
+  <p>In testing there was a big issue with how Jekyll compiles SASS. Jekyll does not generate a source map and will over-write it on compile. This means that css is almost impossible to debug.</p>
+
+
+  <p>so for development, do the following:</p>
+
+
+  <ol>
+    <li>at <code>assets/css/styles.scss</code> disable the <em>front matter</em> so it isn&#39;t tracked by jekyll</li>
+
+
+    <li>at <code>assets/css/styles.scss</code> comment out <code>//@import &quot;main&quot;;</code> and replace with <code>@import &quot;../../_sass/main&quot;;</code></li>
+
+
+    <li>in <code>config.yml</code> exclude <code>_sass</code></li>
+
+
+    <li>in <code>config.yml</code> exclude <code>assets/css/styles.scss</code></li>
+
+
+    <li>if it&#39;s running, stop <code>jekyll serve</code></li>
+
+
+    <li>start <code>jekyll serve</code></li>
+  </ol>
+
+
+  <p>You can now use whatever compiler you like and it will generate a sass map that can be used in the inspector.</p>
+
+
+  <p>This should work fine, but if you want to do things the <em>jekyll way</em>, reverse these steps for production.</p>
+
+
+  <h3>if using codekit</h3>
+
+
+  <p>There are some things you will need to setup in codekit to work with jekyll</p>
+
+
+  <ol>
+    <li>go to general settings and add <code>_site</code> to the ignore list</li>
+
+
+    <li>in languages, go to markdown and under markdown output, ignore markdown files on change/build (because jekyll does this)</li>
+
+
+    <li>in languages, go to sass and make sure sass compiles to the same folder as the source</li>
+  </ol>
+
+
+  <h2>things to watch out for</h2>
+
+
+  <ol>
+    <li>if you have any <em>liquid</em> code in a markdown or html document, jekyll will try to render it. In most cases this is fine, but if you actually want to see the code (such as in this file) you need to make sure the file is ignored in config.yml</li>
+  </ol>
+
+	
+</body>
+</html>
